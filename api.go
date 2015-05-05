@@ -5,7 +5,8 @@ import (
 	"net/http"
 	"log"
 	"encoding/json"
-	"path"
+	"strings"
+	"net/url"
 )
 
 type Parameter struct {
@@ -28,7 +29,8 @@ type Schema struct {
 }
 
 type Config struct {
-	BasePath string
+	BasePath *url.URL
+	PrivateToken string
 }
 
 type Api struct {
@@ -38,12 +40,20 @@ type Api struct {
 }
 
 func main() {
+	link, err := url.Parse("https://gitlab.com/api/v3/");
+
+	if (err != nil) {
+		log.Panicf("Invalid url %s", err.Error())
+	}
+
 	config := Config{
-		BasePath: "https://gitlab.com/api/v3/",
+		BasePath: link,
+		PrivateToken: "qwerty",
 	}
 
 	api := New(config)
-	m := make(map[string]interface{})
+	m := make(map[string]string)
+	m["project_id"] = "83866";
 	resp := api.Exec("GetIssuesByProject", m);
 	log.Printf("%i", resp.StatusCode)
 
@@ -52,6 +62,23 @@ func main() {
 	defer resp.Body.Close()
 
 	decoder := json.NewDecoder(resp.Body)
+
+	log.Print(resp.ContentLength);
+
+	decoder.Decode(&respBody)
+
+	log.Printf("%v", respBody)
+
+
+	m["project_id"] = "83866";
+	m["issue_id"] = "144751";
+
+	resp = api.Exec("GetIssue", m);
+	log.Printf("%i", resp.StatusCode)
+
+	defer resp.Body.Close()
+
+	decoder = json.NewDecoder(resp.Body)
 
 	log.Print(resp.ContentLength);
 
@@ -89,9 +116,11 @@ func New(config Config) (*Api) {
 /*
 	Exec new command
  */
-func (api *Api) Exec(commandName string, parameters map[string]interface{}) (*http.Response) {
+func (api *Api) Exec(commandName string, parameters map[string]string) (*http.Response) {
 	command := api.offset(commandName)
 	url := api.url(command.Uri, parameters)
+
+	log.Println(url)
 
 	req, err := http.NewRequest(command.Method, url, nil)
 
@@ -111,25 +140,54 @@ func (api *Api) Exec(commandName string, parameters map[string]interface{}) (*ht
 /*
 	Generate url for request
  */
-func (api *Api) url(uri string, parameters map[string]interface{}) string {
-	chunks, file := path.Split(uri);
-	log.Printf("%v", file)
-	log.Printf("%+v", chunks)
+func (api *Api) url(uri string, parameters map[string]string) string {
+	chunks := strings.Split(uri, "/");
 
-	/*for chunk := range chunks {
-		chunk
+	for index, chunk := range chunks {
+		if strings.HasPrefix(chunk,"{") {
+			chunk = strings.TrimSuffix(strings.TrimPrefix(chunk, "{"),"}")
+
+			chunkValue, ok := parameters[chunk]
+
+			delete(parameters, chunk)
+
+			if !ok {
+				log.Panicf("Parameter %s require", chunk)
+			}
+
+			chunks[index] = chunkValue
+		}
 	}
 
-	regexp.ReplaceAll();*/
+	uri = strings.Join(chunks, "/");
 
-	return api.Config.BasePath+uri+"?private_token=tFcoFiGM1DStbHayyKmc";
+	baseUrl := &url.URL{
+		Scheme: api.Config.BasePath.Scheme,
+		Host: api.Config.BasePath.Host,
+		Path: api.Config.BasePath.Path,
+	}
+
+	baseUrl.Path += uri;
+	queryParams := url.Values{}
+
+	for name, params := range parameters  {
+		queryParams.Add(name, params)
+	}
+
+	queryParams.Add("private_token", api.Config.PrivateToken)
+	baseUrl.RawQuery = queryParams.Encode()
+
+	return baseUrl.String();
 }
 
+/*
+	Gets command by name
+ */
 func (api *Api) offset(commandName string) (Command) {
 	command, ok := api.Schema.Operations[commandName]
 
 	if !ok {
-		panic("Command not found")
+		log.Panicf("Command not %s found", commandName)
 	}
 
 	return command
