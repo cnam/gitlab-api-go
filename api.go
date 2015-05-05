@@ -164,10 +164,9 @@ func (api *Api) url(uri string, parameters map[string]string) string {
 	baseUrl := &url.URL{
 		Scheme: api.Config.BasePath.Scheme,
 		Host: api.Config.BasePath.Host,
-		Path: api.Config.BasePath.Path,
+		Path: strings.TrimSuffix(api.Config.BasePath.Path,"/")+"/"+uri,
 	}
 
-	baseUrl.Path += uri;
 	queryParams := url.Values{}
 
 	for name, params := range parameters  {
