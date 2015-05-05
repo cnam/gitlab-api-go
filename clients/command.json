@@ -1,0 +1,764 @@
+{
+    "name": "Gitlab Issue Api Client",
+    "apiVersion": "2014-08-12",
+    "description": "Клиент для доступа к gitlab issue",
+    "operations": {
+        "GetIssues": {
+            "httpMethod": "GET",
+            "uri": "issues",
+            "responseClass": "Gitlab\\Models\\IssueList",
+            "parameters": {
+                "per_page": {
+                    "location": "query"
+                },
+                "page": {
+                    "location": "query"
+                },
+                "state": {
+                    "location": "query"
+                },
+                "labels": {
+                    "location": "query"
+                }
+            }
+        },
+        "GetIssuesByProject": {
+            "httpMethod": "GET",
+            "uri": "projects/{project_id}/issues",
+            "responseClass": "Gitlab\\Models\\IssueList",
+            "parameters": {
+                "project_id": {
+                    "location": "uri",
+                    "required": true
+                },
+                "per_page": {
+                    "location": "query"
+                },
+                "page": {
+                    "location": "query"
+                },
+                "state": {
+                    "location": "query"
+                },
+                "labels": {
+                    "location": "query"
+                }
+            }
+        },
+        "GetIssue": {
+            "httpMethod": "GET",
+            "uri": "projects/{project_id}/issues/{issue_id}",
+            "responseClass": "Gitlab\\Models\\Issue",
+            "parameters": {
+                "project_id": {
+                    "location": "uri",
+                    "required": true
+                },
+                "issue_id": {
+                    "location": "uri",
+                    "required": true
+                }
+            }
+        },
+        "CreateIssue": {
+            "httpMethod": "POST",
+            "uri": "projects/{project_id}/issues",
+            "responseClass": "Gitlab\\Models\\Issue",
+            "parameters": {
+                "project_id": {
+                    "location": "uri",
+                    "required": true
+                },
+                "title": {
+                    "location": "json",
+                    "required": true,
+                    "type" : "string"
+                },
+                "description": {
+                    "location": "json",
+                    "type" : "string"
+                },
+                "assignee_id": {
+                    "location": "json",
+                    "type" : "string"
+                },
+                "milestone_id": {
+                    "location": "json",
+                    "type" : "string"
+                },
+                "labels": {
+                    "location": "json",
+                    "type" : "string"
+                }
+            }
+        },
+        "EditIssue": {
+            "httpMethod": "PUT",
+            "uri": "projects/{project_id}/issues/{issue_id}",
+            "responseClass": "Gitlab\\Models\\Issue",
+            "parameters": {
+                "project_id": {
+                    "location": "uri",
+                    "required": true
+                },
+                "issue_id": {
+                    "location": "uri",
+                    "required": true
+                },
+                "title": {
+                    "location": "json",
+                    "required": true,
+                    "type" : "string"
+                },
+                "description": {
+                    "location": "json",
+                    "type" : "string"
+                },
+                "assignee_id": {
+                    "location": "json",
+                    "type" : "string"
+                },
+                "milestone_id": {
+                    "location": "json",
+                    "type" : "string"
+                },
+                "labels": {
+                    "location": "json",
+                    "type" : "string"
+                },
+                "state_event": {
+                    "location": "json",
+                    "type" : "string"
+                }
+            }
+        },
+        "DeleteIssue": {
+            "httpMethod": "PUT",
+            "uri": "projects/{project_id}/issues/{issue_id}",
+            "responseClass": "Gitlab\\Models\\Issue",
+            "parameters": {
+                "project_id": {
+                    "location": "uri",
+                    "required": true
+                },
+                "issue_id": {
+                    "location": "uri",
+                    "required": true
+                },
+                "state_event": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                }
+            }
+        },
+        "GetProjects": {
+            "httpMethod": "GET",
+            "uri": "projects",
+            "responseClass": "Gitlab\\Models\\ProjectList",
+            "parameters": {
+                "per_page": {
+                    "location": "query"
+                },
+                "page": {
+                    "location": "query"
+                }
+            }
+        },
+        "GetProjectsAll": {
+            "httpMethod": "GET",
+            "uri": "projects/all",
+            "responseClass": "Gitlab\\Models\\ProjectList",
+            "parameters": {
+                "per_page": {
+                    "location": "query"
+                },
+                "page": {
+                    "location": "query"
+                }
+            }
+        },
+        "GetProjectsOwned": {
+            "httpMethod": "GET",
+            "uri": "projects/оwned",
+            "responseClass": "Gitlab\\Models\\ProjectList",
+            "parameters": {
+                "per_page": {
+                    "location": "query"
+                },
+                "page": {
+                    "location": "query"
+                }
+            }
+        },
+        "GetProject": {
+            "httpMethod": "GET",
+            "uri": "projects/{project_id}",
+            "responseClass": "Gitlab\\Models\\Project",
+            "parameters": {
+                "project_id": {
+                    "location": "uri",
+                    "required": true
+                }
+            }
+        },
+        "GetProjectEvents": {
+            "httpMethod": "GET",
+            "uri": "projects/{project_id}/events",
+            "responseClass": "Gitlab\\Models\\ProjectEventList",
+            "parameters": {
+                "project_id": {
+                    "location": "uri",
+                    "required": true
+                },
+                "per_page": {
+                    "location": "query"
+                },
+                "page": {
+                    "location": "query"
+                }
+            }
+        },
+        "CreateProject": {
+            "httpMethod": "POST",
+            "uri": "projects",
+            "responseClass": "Gitlab\\Models\\Project",
+            "parameters": {
+                "name": {
+                    "location": "json",
+                    "required": true,
+                    "type" : "string"
+                },
+                "namespace_id": {
+                    "location": "json",
+                    "type" : "string"
+                },
+                "description": {
+                    "location": "json",
+                    "type" : "string"
+                },
+                "issues_enabled": {
+                    "location": "json",
+                    "type" : "string"
+                },
+                "merge_requests_enabled": {
+                    "location": "json",
+                    "type" : "string"
+                },
+                "wiki_enabled": {
+                    "location": "json",
+                    "type" : "string"
+                },
+                "snippets_enabled": {
+                    "location": "json",
+                    "type" : "string"
+                },
+                "public": {
+                    "location": "json",
+                    "type" : "string"
+                },
+                "visibility_level": {
+                    "location": "json",
+                    "type" : "string"
+                },
+                "import_url": {
+                    "location": "json",
+                    "type" : "string"
+                }
+            }
+        },
+        "CreateProjectForUser": {
+            "httpMethod": "POST",
+            "uri": "projects/user/{user_id}",
+            "responseClass": "Gitlab\\Models\\Project",
+            "parameters": {
+                "user_id": {
+                    "location": "uri",
+                    "required": true
+                },
+                "name": {
+                    "location": "json",
+                    "required": true,
+                    "type" : "string"
+                },
+                "namespace_id": {
+                    "location": "json",
+                    "type" : "string"
+                },
+                "description": {
+                    "location": "json",
+                    "type" : "string"
+                },
+                "issues_enabled": {
+                    "location": "json",
+                    "type" : "string"
+                },
+                "merge_requests_enabled": {
+                    "location": "json",
+                    "type" : "string"
+                },
+                "wiki_enabled": {
+                    "location": "json",
+                    "type" : "string"
+                },
+                "snippets_enabled": {
+                    "location": "json",
+                    "type" : "string"
+                },
+                "public": {
+                    "location": "json",
+                    "type" : "string"
+                },
+                "visibility_level": {
+                    "location": "json",
+                    "type" : "string"
+                },
+                "import_url": {
+                    "location": "json",
+                    "type" : "string"
+                }
+            }
+        },
+        "DeleterProject": {
+            "httpMethod": "DELETE",
+            "uri": "projects/{project_id}",
+            "responseClass": "Gitlab\\Models\\Project",
+            "parameters": {
+                "project_id": {
+                    "location": "uri",
+                    "required": true
+                }
+            }
+        },
+        "GetProjectMembers": {
+            "httpMethod": "GET",
+            "uri": "projects/{project_id}/members",
+            "responseClass": "Gitlab\\Models\\UserList",
+            "parameters": {
+                "project_id": {
+                    "location": "uri",
+                    "required": true
+                },
+                "per_page": {
+                    "location": "query"
+                },
+                "page": {
+                    "location": "query"
+                }
+            }
+        },
+        "GetProjectMember": {
+            "httpMethod": "GET",
+            "uri": "projects/{project_id}/members/{user_id}",
+            "responseClass": "Gitlab\\Models\\User",
+            "parameters": {
+                "project_id": {
+                    "location": "uri",
+                    "required": true
+                },
+                "user_id": {
+                    "location": "uri",
+                    "required": true
+                },
+                "per_page": {
+                    "location": "query"
+                },
+                "page": {
+                    "location": "query"
+                }
+            }
+        },
+        "AddProjectMember": {
+            "httpMethod": "POST",
+            "uri": "projects/{project_id}/members",
+            "responseClass": "Gitlab\\Models\\User",
+            "parameters": {
+                "project_id": {
+                    "location": "uri",
+                    "required": true
+                },
+                "user_id": {
+                    "location": "json",
+                    "type" : "string",
+                    "required": true
+                },
+                "access_level": {
+                    "location": "json",
+                    "type" : "string",
+                    "required": true
+                }
+            }
+        },
+        "EditProjectMember": {
+            "httpMethod": "POST",
+            "uri": "projects/{project_id}/members/{user_id}",
+            "responseClass": "Gitlab\\Models\\User",
+            "parameters": {
+                "project_id": {
+                    "location": "uri",
+                    "required": true
+                },
+                "user_id": {
+                    "location": "uri",
+                    "required": true
+                },
+                "access_level": {
+                    "location": "json",
+                    "type" : "string",
+                    "required": true
+                }
+            }
+        },
+        "DeleteProjectMember": {
+            "httpMethod": "DELETE",
+            "uri": "projects/{project_id}/members/{user_id}",
+            "responseClass": "Gitlab\\Models\\User",
+            "parameters": {
+                "project_id": {
+                    "location": "uri",
+                    "required": true
+                },
+                "user_id": {
+                    "location": "uri",
+                    "required": true
+                }
+            }
+        },
+        "GetSession": {
+            "httpMethod": "POST",
+            "uri": "session",
+            "responseClass": "Gitlab\\Models\\User",
+            "parameters": {
+                "login": {
+                    "location": "json",
+                    "type": "string"
+                },
+                "email": {
+                    "location": "json",
+                    "type": "string"
+                },
+                "password": {
+                    "location": "json",
+                    "type": "string"
+                }
+            }
+        },
+        "GetComments": {
+            "httpMethod": "GET",
+            "uri": "projects/{project_id}/issues/{issue_id}/notes",
+            "responseClass": "Gitlab\\Models\\CommentList",
+            "parameters": {
+                "project_id": {
+                    "location": "uri",
+                    "required": true
+                },
+                "issue_id": {
+                    "location": "uri",
+                    "required": true
+                },
+                "per_page": {
+                    "location": "query"
+                },
+                "page": {
+                    "location": "query"
+                }
+            }
+        },
+        "GetComment": {
+            "httpMethod": "GET",
+            "uri": "projects/{project_id}/issues/{issue_id}/notes/{comment_id}",
+            "responseClass": "Gitlab\\Models\\Comment",
+            "parameters": {
+                "project_id": {
+                    "location": "uri",
+                    "required": true
+                },
+                "issue_id": {
+                    "location": "uri",
+                    "required": true
+                },
+                "comment_id": {
+                    "location": "uri",
+                    "required": true
+                }
+            }
+        },
+        "CreateComment": {
+            "httpMethod": "POST",
+            "uri": "projects/{project_id}/issues/{issue_id}/notes",
+            "responseClass": "Gitlab\\Models\\Comment",
+            "parameters": {
+                "project_id": {
+                    "location": "uri",
+                    "required": true
+                },
+                "issue_id": {
+                    "location": "uri",
+                    "required": true
+                },
+                "body": {
+                    "location": "json",
+                    "type": "string"
+                }
+            }
+        },
+        "GetUsers": {
+            "httpMethod": "GET",
+            "uri": "users",
+            "responseClass": "Gitlab\\Models\\UserList",
+            "parameters": {
+                "per_page": {
+                    "location": "query"
+                },
+                "page": {
+                    "location": "query"
+                }
+            }
+        },
+        "GetUser": {
+            "httpMethod": "GET",
+            "uri": "users/{user_id}",
+            "responseClass": "Gitlab\\Models\\User",
+            "parameters": {
+                "user_id": {
+                    "location": "uri",
+                    "required": true
+                }
+            }
+        },
+        "GetMilestones": {
+            "httpMethod": "GET",
+            "uri": "projects/{project_id}/milestones",
+            "responseClass": "Gitlab\\Models\\MilestoneList",
+            "parameters": {
+                "project_id": {
+                    "location": "uri",
+                    "required": true
+                },
+                "per_page": {
+                    "location": "query"
+                },
+                "page": {
+                    "location": "query"
+                }
+            }
+        },
+        "GetMilestone": {
+            "httpMethod": "GET",
+            "uri": "projects/{project_id}/milestones/{milestone_id}",
+            "responseClass": "Gitlab\\Models\\Milestone",
+            "parameters": {
+                "project_id": {
+                    "location": "uri",
+                    "required": true
+                },
+                "milestone_id": {
+                    "location": "uri",
+                    "required": true
+                },
+                "per_page": {
+                    "location": "query"
+                },
+                "page": {
+                    "location": "query"
+                }
+            }
+        },
+        "CreateMilestone": {
+            "httpMethod": "POST",
+            "uri": "projects/{project_id}/milestones",
+            "responseClass": "Gitlab\\Models\\Milestone",
+            "parameters": {
+                "project_id": {
+                    "location": "uri",
+                    "required": true
+                },
+                "title" : {
+                    "location": "json",
+                    "required": true,
+                    "type": "string"
+                },
+                "description" : {
+                    "location": "json",
+                    "required": true,
+                    "type": "string"
+                },
+                "due_date" : {
+                    "location": "json",
+                    "required": true,
+                    "type": "string"
+                }
+            }
+        },
+        "EditMilestone": {
+            "httpMethod": "PUT",
+            "uri": "projects/{project_id}/milestones/{milestone_id}",
+            "responseClass": "Gitlab\\Models\\Milestone",
+            "parameters": {
+                "project_id": {
+                    "location": "uri",
+                    "required": true
+                },
+                "milestone_id": {
+                    "location": "uri",
+                    "required": true
+                },
+                "title" : {
+                    "location": "json",
+                    "type": "string"
+                },
+                "description" : {
+                    "location": "json",
+                    "type": "string"
+                },
+                "due_date" : {
+                    "location": "json",
+                    "type": "string"
+                },
+                "state_event" : {
+                    "location": "json",
+                    "type": "string"
+                }
+
+            }
+        },
+        "DeleteMilestone": {
+            "httpMethod": "PUT",
+            "uri": "projects/{project_id}/milestones/{milestone_id}",
+            "responseClass": "Gitlab\\Models\\Milestone",
+            "parameters": {
+                "project_id": {
+                    "location": "uri",
+                    "required": true
+                },
+                "milestone_id": {
+                    "location": "uri",
+                    "required": true
+                },
+                "state_event" : {
+                    "location": "json",
+                    "required": true,
+                    "type": "string"
+                }
+            }
+        },
+        "GetGroups": {
+            "httpMethod": "GET",
+            "uri": "groups",
+            "responseClass": "Gitlab\\Models\\GroupList",
+            "parameters": {
+                "per_page": {
+                    "location": "query"
+                },
+                "page": {
+                    "location": "query"
+                }
+            }
+        },
+        "GetGroup": {
+            "httpMethod": "GET",
+            "uri": "groups/{group_id}",
+            "responseClass": "Gitlab\\Models\\Group",
+            "parameters": {
+                "group_id": {
+                    "location": "uri",
+                    "required": true
+                }
+            }
+        },
+        "CreateGroup": {
+            "httpMethod": "POST",
+            "uri": "groups",
+            "responseClass": "Gitlab\\Models\\Group",
+            "parameters": {
+                "name" : {
+                    "location": "json",
+                    "required": true,
+                    "type": "string"
+                },
+                "path" : {
+                    "location": "json",
+                    "required": true,
+                    "type": "string"
+                }
+            }
+        },
+        "TransferProjectToGroup": {
+            "httpMethod": "POST",
+            "uri": "groups/{group_id}/projects/{project_id}",
+            "responseClass": "Gitlab\\Models\\Group",
+            "parameters": {
+                "group_id": {
+                    "location": "uri",
+                    "required": true
+                },
+                "project_id": {
+                    "location": "uri",
+                    "required": true
+                }
+            }
+        },
+        "DeleteGroup": {
+            "httpMethod": "DELETE",
+            "uri": "groups/{group_id}",
+            "responseClass": "Gitlab\\Models\\Group",
+            "parameters": {
+                "group_id": {
+                    "location": "uri",
+                    "required": true
+                }
+            }
+        },
+        "GetGroupMembers": {
+            "httpMethod": "GET",
+            "uri": "groups/{group_id}/members",
+            "responseClass": "Gitlab\\Models\\UserList",
+            "parameters": {
+                "group_id": {
+                    "location": "uri",
+                    "required": true
+                },
+                "per_page": {
+                    "location": "query"
+                },
+                "page": {
+                    "location": "query"
+                }
+            }
+        },
+        "AddGroupMember": {
+            "httpMethod": "POST",
+            "uri": "groups/{group_id}/members",
+            "responseClass": "Gitlab\\Models\\User",
+            "parameters": {
+                "group_id": {
+                    "location": "uri",
+                    "required": true
+                },
+                "user_id": {
+                    "location": "json",
+                    "required": true
+                },
+                "access_level": {
+                    "location": "json",
+                    "required": true
+                }
+            }
+        },
+        "DeleteGroupMember": {
+            "httpMethod": "DELETE",
+            "uri": "groups/{group_id}/members/{user_id}",
+            "responseClass": "Gitlab\\Models\\User",
+            "parameters": {
+                "group_id": {
+                    "location": "uri",
+                    "required": true
+                },
+                "user_id": {
+                    "location": "uri",
+                    "required": true
+                }
+            }
+        }
+    }
+}

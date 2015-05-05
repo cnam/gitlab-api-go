@@ -1,0 +1,19 @@
+{
+    "name": "Gitlab Issue Api Client",
+    "apiVersion": "2014-08-12",
+    "description": "Клиент для доступа к gitlab issue",
+    "includes": [
+        "issues.json",
+        "projects.json",
+        "groups.json",
+        "users.json",
+        "comments.json",
+        "labels.json",
+        "milestones.json",
+        "merge_requests.json",
+        "repositories.json",
+        "oauth.json"
+    ]
+}
+
+
