@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/cnam/gitlab-api-go/src/gitlabapi"
+	//"github.com/cnam/gitlab-api-go/src/gitlabapi"
+	"./src/gitlabapi"
 	"log"
-	"encoding/json"
 	"net/url"
 )
 
@@ -16,41 +16,21 @@ func main() {
 
 	config := &gitlabapi.Config{
 		BasePath: link,
-		PrivateToken: "qwerty",
+		PrivateToken: "jc6-QyBGSsF-ySyEMgLn",
 	}
 
 	api := gitlabapi.New(config)
+
+
 	m := make(map[string]string)
 	m["project_id"] = "83866";
 	resp := api.Exec("GetIssuesByProject", m);
-	log.Printf("%i", resp.StatusCode)
 
-	var respBody interface{}
-
-	defer resp.Body.Close()
-
-	decoder := json.NewDecoder(resp.Body)
-
-	log.Print(resp.ContentLength);
-
-	decoder.Decode(&respBody)
-
-	log.Printf("%v", respBody)
-
+	log.Printf("%v", resp)
 
 	m["project_id"] = "83866";
 	m["issue_id"] = "144751";
 
 	resp = api.Exec("GetIssue", m);
-	log.Printf("%i", resp.StatusCode)
-
-	defer resp.Body.Close()
-
-	decoder = json.NewDecoder(resp.Body)
-
-	log.Print(resp.ContentLength);
-
-	decoder.Decode(&respBody)
-
-	log.Printf("%v", respBody)
+	log.Printf("%v", resp)
 }

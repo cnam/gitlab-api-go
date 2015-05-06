@@ -9,6 +9,11 @@ import (
 	"net/url"
 )
 
+
+type GitlabModelsIssue struct {
+	IssueId string `json:"project_id"`
+}
+
 type Parameter struct {
 	Location string `json:"location"`
 	Require bool `json:"required"`
@@ -19,6 +24,7 @@ type Command struct {
 	Uri string `json:"uri"`
 	Method string `json:"httpMethod"`
 	Parameters map[string]Parameter `json:"parameters"`
+	ResponseClass string `json:"responseClass"`
 }
 
 type Schema struct {
@@ -86,10 +92,17 @@ func (api *Api) Exec(commandName string, parameters map[string]string) interface
 		log.Println("Bad Response", err.Error())
 	}
 
-	return api.parseResponse(resp)
+	return api.parseResponse(&command ,resp)
 }
 
-func (api *Api) parseResponse(resp *http.Response) interface{} {
+/*
+	Parse response from gitlab
+ */
+func (api *Api) parseResponse(command *Command ,resp *http.Response) interface{} {
+
+	structName := strings.Trim(command.ResponseClass, `\`)
+
+	log.Println(structName);
 
 	var respBody interface{}
 
@@ -97,10 +110,9 @@ func (api *Api) parseResponse(resp *http.Response) interface{} {
 	decoder := json.NewDecoder(resp.Body)
 	decoder.Decode(&respBody)
 
-	if resp.StatusCode != http.StatusOK ||
-	   resp.StatusCode != http.StatusCreated ||
-	   resp.StatusCode != http.StatusNoContent{
-		log.Panicf("Bad response code %s", resp.StatusCode)
+
+	if resp.StatusCode != http.StatusOK {
+		log.Panicf("Bad response code", resp.StatusCode)
 	}
 
 	return respBody
