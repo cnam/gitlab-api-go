@@ -68,7 +68,7 @@ func New(config *Config) (*Api) {
 /*
 	Exec new command
  */
-func (api *Api) Exec(commandName string, parameters map[string]string) (*http.Response) {
+func (api *Api) Exec(commandName string, parameters map[string]string) interface{} {
 	command := api.offset(commandName)
 	url := api.url(command.Uri, parameters)
 
@@ -86,7 +86,24 @@ func (api *Api) Exec(commandName string, parameters map[string]string) (*http.Re
 		log.Println("Bad Response", err.Error())
 	}
 
-	return resp
+	return api.parseResponse(resp)
+}
+
+func (api *Api) parseResponse(resp *http.Response) interface{} {
+
+	var respBody interface{}
+
+	defer resp.Body.Close()
+	decoder := json.NewDecoder(resp.Body)
+	decoder.Decode(&respBody)
+
+	if resp.StatusCode != http.StatusOK ||
+	   resp.StatusCode != http.StatusCreated ||
+	   resp.StatusCode != http.StatusNoContent{
+		log.Panicf("Bad response code %s", resp.StatusCode)
+	}
+
+	return respBody
 }
 
 /*

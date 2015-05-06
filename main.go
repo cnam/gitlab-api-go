@@ -1,7 +1,7 @@
 package main
 
 import (
-	"gitlabapi"
+	"github.com/cnam/gitlab-api-go/src/gitlabapi"
 	"log"
 	"encoding/json"
 	"net/url"
