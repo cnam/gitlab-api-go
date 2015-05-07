@@ -41,11 +41,22 @@ type Api struct {
 	*http.Client
 }
 
-/*
-	create new API client for gitlab api
- */
+type ApiCommand struct {
+	Name string
+	Parameters map[string]string
+	MapTo interface{}
+	*Api
+	Command
+	*http.Request
+	*http.Response
+}
+
+//
+//	create new API client for gitlab api
+//
 func NewApi(config *Config) (*Api) {
-	var schema *Schema;
+	var schema *Schema
+
 	fileContent, err := ioutil.ReadFile("clients/command.json");
 
 	if err != nil {
@@ -65,45 +76,60 @@ func NewApi(config *Config) (*Api) {
 	}
 }
 
-/*
-	Exec new command
- */
-func (api *Api) Exec(commandName string, parameters map[string]string, mapping interface{}) {
-	command := api.offset(commandName)
-	url := api.url(command.Uri, parameters)
+//
+//Create new command for execute
+//
+func (api *Api) NewCommand(name string, parameters map[string]string, mapping interface{}) *ApiCommand {
 
+	command := api.offset(name)
+	url  := api.url(command.Uri, parameters)
 	req, err := http.NewRequest(command.Method, url, nil)
 
 	if err != nil {
 		log.Panicf("Bad request", err.Error())
 	}
 
-	resp, err := api.Client.Do(req)
+	return &ApiCommand{
+		name,
+		parameters,
+		mapping,
+		api,
+		command,
+		req,
+		&http.Response{},
+	}
+}
+
+//
+//  execute created command
+//
+func (command *ApiCommand) Execute() {
+	resp, err := command.Api.Client.Do(command.Request)
 
 	if err != nil {
 		log.Panicf("Bad Response", err.Error())
 	}
 
-	api.parseResponse(&command, resp, mapping)
+	command.parseResponse(resp)
 }
 
-/*
-	Parse response from gitlab
- */
-func (api *Api) parseResponse(command *Command, resp *http.Response, mapping interface{}) {
+
+
+// parse response after execute command
+func (command *ApiCommand) parseResponse(resp *http.Response) {
 
 	defer resp.Body.Close()
 	decoder := json.NewDecoder(resp.Body)
-	decoder.Decode(&mapping)
+	decoder.Decode(&command.MapTo)
+	command.Response = resp
 
 	if resp.StatusCode != http.StatusOK {
 		log.Panicf("Bad response code", resp.StatusCode)
 	}
 }
 
-/*
-	Generate url for request
- */
+
+//	Generate url for request 
 func (api *Api) url(uri string, parameters map[string]string) string {
 	chunks := strings.Split(uri, "/");
 
@@ -143,9 +169,9 @@ func (api *Api) url(uri string, parameters map[string]string) string {
 	return baseUrl.String();
 }
 
-/*
-	Gets command by name
- */
+//
+//	Gets command by name
+//
 func (api *Api) offset(commandName string) (Command) {
 	command, ok := api.Schema.Operations[commandName]
 

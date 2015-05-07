@@ -13,30 +13,27 @@ type Issue struct {
 }
 
 func main() {
-	link, err := url.Parse("https://gitlab.com/api/v3/");
+	var issues []Issue
+	var issue Issue
 
-	if (err != nil) {
-		log.Panicf("Invalid url %s", err.Error())
-	}
+	link, _ := url.Parse("https://gitlab.com/api/v3/");
 
 	config := &gitlabapi.Config{
 		BasePath: link,
-		PrivateToken: "jc6-QyBGSsF-ySyEMgLn",
+		PrivateToken: "qwerty",
 	}
 
 	api := gitlabapi.NewApi(config)
+	p := make(map[string]string)
 
-	m := make(map[string]string)
-	var issues []Issue
-	m["project_id"] = "83866";
-	api.Exec("GetIssuesByProject", m, &issues);
+	p["project_id"] = "83866";
+	api.NewCommand("GetIssuesByProject", p, &issues).Execute()
 
 	log.Printf("%+v", issues)
 
-	var issue Issue
-	m["project_id"] = "83866";
-	m["issue_id"] = "144751";
+	p["project_id"] = "83866";
+	p["issue_id"] = "144751";
+	api.NewCommand("GetIssue", p, &issue).Execute()
 
-	api.Exec("GetIssue", m, &issue);
 	log.Printf("%+v", issue)
 }
