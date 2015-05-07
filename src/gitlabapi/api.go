@@ -10,10 +10,6 @@ import (
 )
 
 
-type GitlabModelsIssue struct {
-	IssueId string `json:"project_id"`
-}
-
 type Parameter struct {
 	Location string `json:"location"`
 	Require bool `json:"required"`
@@ -42,13 +38,13 @@ type Config struct {
 type Api struct {
 	*Schema
 	*Config
-	Client *http.Client
+	*http.Client
 }
 
 /*
 	create new API client for gitlab api
  */
-func New(config *Config) (*Api) {
+func NewApi(config *Config) (*Api) {
 	var schema *Schema;
 	fileContent, err := ioutil.ReadFile("clients/command.json");
 
@@ -62,60 +58,47 @@ func New(config *Config) (*Api) {
 		log.Println("Error parse", err.Error())
 	}
 
-	api := &Api{
-		Config:config,
-		Schema:schema,
-		Client:&http.Client{},
+	return &Api{
+		schema,
+		config,
+		&http.Client{},
 	}
-
-	return api
 }
 
 /*
 	Exec new command
  */
-func (api *Api) Exec(commandName string, parameters map[string]string) interface{} {
+func (api *Api) Exec(commandName string, parameters map[string]string, mapping interface{}) {
 	command := api.offset(commandName)
 	url := api.url(command.Uri, parameters)
-
-	log.Println(url)
 
 	req, err := http.NewRequest(command.Method, url, nil)
 
 	if err != nil {
-		log.Println("Bad request", err.Error())
+		log.Panicf("Bad request", err.Error())
 	}
 
 	resp, err := api.Client.Do(req)
 
 	if err != nil {
-		log.Println("Bad Response", err.Error())
+		log.Panicf("Bad Response", err.Error())
 	}
 
-	return api.parseResponse(&command ,resp)
+	api.parseResponse(&command, resp, mapping)
 }
 
 /*
 	Parse response from gitlab
  */
-func (api *Api) parseResponse(command *Command ,resp *http.Response) interface{} {
-
-	structName := strings.Trim(command.ResponseClass, `\`)
-
-	log.Println(structName);
-
-	var respBody interface{}
+func (api *Api) parseResponse(command *Command, resp *http.Response, mapping interface{}) {
 
 	defer resp.Body.Close()
 	decoder := json.NewDecoder(resp.Body)
-	decoder.Decode(&respBody)
-
+	decoder.Decode(&mapping)
 
 	if resp.StatusCode != http.StatusOK {
 		log.Panicf("Bad response code", resp.StatusCode)
 	}
-
-	return respBody
 }
 
 /*

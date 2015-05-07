@@ -7,6 +7,11 @@ import (
 	"net/url"
 )
 
+type Issue struct {
+	ProjectId int `json:"project_id"`
+	Title  string `json:"title"`
+}
+
 func main() {
 	link, err := url.Parse("https://gitlab.com/api/v3/");
 
@@ -19,18 +24,19 @@ func main() {
 		PrivateToken: "jc6-QyBGSsF-ySyEMgLn",
 	}
 
-	api := gitlabapi.New(config)
-
+	api := gitlabapi.NewApi(config)
 
 	m := make(map[string]string)
+	var issues []Issue
 	m["project_id"] = "83866";
-	resp := api.Exec("GetIssuesByProject", m);
+	api.Exec("GetIssuesByProject", m, &issues);
 
-	log.Printf("%v", resp)
+	log.Printf("%+v", issues)
 
+	var issue Issue
 	m["project_id"] = "83866";
 	m["issue_id"] = "144751";
 
-	resp = api.Exec("GetIssue", m);
-	log.Printf("%v", resp)
+	api.Exec("GetIssue", m, &issue);
+	log.Printf("%+v", issue)
 }
