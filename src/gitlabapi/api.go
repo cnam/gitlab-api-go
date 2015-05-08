@@ -7,12 +7,13 @@ import (
 	"encoding/json"
 	"strings"
 	"net/url"
+	"bytes"
 )
 
 
 type Parameter struct {
 	Location string `json:"location"`
-	Require bool `json:"required"`
+	Required bool `json:"required"`
 	Type string `json:"type"`
 }
 
@@ -82,8 +83,15 @@ func NewApi(config *Config) (*Api) {
 func (api *Api) NewCommand(name string, parameters map[string]string, mapping interface{}) (*ApiCommand) {
 
 	command := api.offset(name)
-	url  := api.url(command.Uri, parameters)
-	req, err := http.NewRequest(command.Method, url, nil)
+	requestUrl, parameters  := api.url(&command, parameters)
+
+	data := &url.Values{}
+
+	for name, parameter := range parameters  {
+		data.Set(name, parameter)
+	}
+
+	req, err := http.NewRequest(command.Method, requestUrl, bytes.NewBufferString(data.Encode()))
 
 	if err != nil {
 		log.Panicf("Bad request", err.Error())
@@ -123,14 +131,16 @@ func (command *ApiCommand) parseResponse(resp *http.Response) {
 	decoder.Decode(&command.MapTo)
 	command.Response = resp
 
-	if resp.StatusCode != http.StatusOK {
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
 		log.Panicf("Bad response code", resp.StatusCode)
 	}
 }
 
 
 //	Generate url for request 
-func (api *Api) url(uri string, parameters map[string]string) string {
+func (api *Api) url(command *Command, parameters map[string]string) (string, map[string]string) {
+
+	uri := command.Uri
 	chunks := strings.Split(uri, "/");
 
 	for index, chunk := range chunks {
@@ -159,14 +169,20 @@ func (api *Api) url(uri string, parameters map[string]string) string {
 
 	queryParams := url.Values{}
 
-	for name, params := range parameters  {
-		queryParams.Add(name, params)
+	for name, parameter := range command.Parameters {
+		if (parameter.Location == "query") {
+			parameter, ok := parameters[name]
+			if (ok) {
+				queryParams.Add(name, parameter)
+				delete(parameters, name)
+			}
+		}
 	}
 
 	queryParams.Add("private_token", api.Config.PrivateToken)
 	baseUrl.RawQuery = queryParams.Encode()
 
-	return baseUrl.String();
+	return baseUrl.String(), parameters;
 }
 
 //
