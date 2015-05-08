@@ -27,13 +27,22 @@ func main() {
 	p := make(map[string]string)
 
 	p["project_id"] = "83866";
-	api.NewCommand("GetIssuesByProject", p, &issues).Execute()
+
+	command := api.NewCommand("GetIssuesByProject", p, &issues)
+	log.Printf("Request url %v", command.Request.URL)
+
+	command.Execute()
 
 	log.Printf("%+v", issues)
 
 	p["project_id"] = "83866";
 	p["issue_id"] = "144751";
-	api.NewCommand("GetIssue", p, &issue).Execute()
+
+	command = api.NewCommand("GetIssue", p, &issue)
+
+	log.Printf("Request url %v", command.Request.URL)
+
+	command.Execute()
 
 	log.Printf("%+v", issue)
 }

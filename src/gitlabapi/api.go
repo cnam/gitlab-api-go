@@ -79,7 +79,7 @@ func NewApi(config *Config) (*Api) {
 //
 //Create new command for execute
 //
-func (api *Api) NewCommand(name string, parameters map[string]string, mapping interface{}) *ApiCommand {
+func (api *Api) NewCommand(name string, parameters map[string]string, mapping interface{}) (*ApiCommand) {
 
 	command := api.offset(name)
 	url  := api.url(command.Uri, parameters)
