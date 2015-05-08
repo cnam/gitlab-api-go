@@ -1,8 +1,7 @@
 package main
 
 import (
-	//"github.com/cnam/gitlab-api-go/src/gitlabapi"
-	"./src/gitlabapi"
+	"github.com/cnam/apibuilder"
 	"log"
 	"net/url"
 )
@@ -19,12 +18,13 @@ func main() {
 
 	link, _ := url.Parse("https://gitlab.com/api/v3/");
 
-	config := &gitlabapi.Config{
-		BasePath: link,
-		PrivateToken: "qwerty",
-	}
+	api := apibuilder.NewApi(&apibuilder.Config{
+		link,
+		"qwerty",
+		"clients/",
+		"index.json",
+	})
 
-	api := gitlabapi.NewApi(config)
 	p := make(map[string]string)
 
 	p["project_id"] = "83866"
