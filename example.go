@@ -2,7 +2,7 @@ package main
 
 import (
 	"log"
-	"./gitlabapi"
+	"github.com/cnam/gitlab-api-go/gitlabapi"
 )
 
 type Issue struct {
