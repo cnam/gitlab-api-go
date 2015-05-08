@@ -1,9 +1,8 @@
 package main
 
 import (
-	"github.com/cnam/apibuilder"
 	"log"
-	"net/url"
+	"./gitlabapi"
 )
 
 type Issue struct {
@@ -16,14 +15,7 @@ func main() {
 	var issues []Issue
 	var issue Issue
 
-	link, _ := url.Parse("https://gitlab.com/api/v3/");
-
-	api := apibuilder.NewApi(&apibuilder.Config{
-		link,
-		"qwerty",
-		"clients/",
-		"index.json",
-	})
+	api := gitlabapi.NewApi("https://gitlab.com/api/v3", "qwerty")
 
 	p := make(map[string]string)
 
