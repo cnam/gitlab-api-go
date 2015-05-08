@@ -14,6 +14,12 @@
 
 ```go
 func main (){
+    type Issue struct {
+        IssueId int `json:"id"`
+        ProjectId int `json:"project_id"`
+        Title  string `json:"title"`
+    }
+
     var issues []Issue
 	var issue Issue
 
